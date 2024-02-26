@@ -30,6 +30,10 @@ export default {
     },
     computed: {
         shortText(){
+
+ if (!this.entry || !this.entry.text) {
+        return ''; // Devuelve una cadena vacía si entry o entry.text es undefined o null
+    }
             return ( this.entry.text.length > 130)
                 ? this.entry.text.substring(0,130) + '...'
                 : this.entry.text
