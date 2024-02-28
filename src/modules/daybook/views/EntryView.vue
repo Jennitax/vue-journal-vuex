@@ -42,9 +42,11 @@ import { defineAsyncComponent } from 'vue';
         ></textarea>
     </div>
 
-    <!-- <img src="https://img.freepik.com/vector-gratis/fondo-plano-dia-internacional-gato_52683-86986.jpg" 
-    alt="entry-picture"
-    class="img-thumbnail"> -->
+    <img
+        v-if="entry.picture && !localImage" 
+        :src="entry.picture" 
+        alt="entry-picture"
+        class="img-thumbnail">
 
     <img
         v-if="localImage"
@@ -70,6 +72,7 @@ import Swal from 'sweetalert2'
 
 
 import getDayMonthYear from '../helpers/getDayMonthYear'
+import uploadImage from '../helpers/uploadImage'
 
 export default {
     props: {
@@ -134,6 +137,9 @@ export default {
             })
             Swal.showLoading()
 
+            const picture = await uploadImage(this.file)
+            this.entry.picture = picture
+
             if(this.entry.id){
 
                 await this.updateEntry(this.entry)
@@ -143,9 +149,10 @@ export default {
 
                this.$router.push({name: 'entry', params: {id}})
             }
-            
+
+            this.file = null
             Swal.fire('Guardado','Entrada registrada con éxito', 'success')
-            
+
         },
         async onDeleteEntry() {
             const {isConfirmed} = await Swal.fire({
